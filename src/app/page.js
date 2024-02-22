@@ -8,7 +8,7 @@ export default function Home() {
   redirect('/docs/Machine_Learning_Proposal.pdf');
   // return (
   //   <main className={styles.main}>
-      
+        
   //   </main>
   // );
 }
