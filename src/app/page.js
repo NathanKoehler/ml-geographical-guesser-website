@@ -1,10 +1,5 @@
-import styles from "./page.module.css";
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <Link href="/ml-geographical-guesser-website/docs/Machine_Learning_Proposal.pdf">Link to Proposal</Link>
-    </main>
-  );
+  redirect("/proposal")
 }
