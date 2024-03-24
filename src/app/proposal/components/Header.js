@@ -1,7 +1,8 @@
+"use client";
+
 import React, { useState } from "react";
 import { Box, Typography, Tabs, Tab } from "@mui/material";
 import ShareLocationIcon from "@mui/icons-material/ShareLocation";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
@@ -9,7 +10,6 @@ const Header = () => {
   const router = useRouter();
 
   const handleTabChange = (event, newValue) => {
-    
     if (newValue !== "none") {
       setTab(newValue);
       router.push(`/${newValue}`);
@@ -40,9 +40,7 @@ const Header = () => {
           <Tab label="Proposal" sx={{ padding: "0 16px" }} value="proposal" />
           {/* Using Next.js Link for client-side navigation */}
           <Tab
-            component="a"
-            href="/docs/Machine_Learning_Proposal.pdf"
-            target="_blank"
+            onClick={() => router.push("/docs/Machine_Learning_Proposal.pdf")}
             label="PDF Link"
             sx={{ padding: "0 16px" }}
             value="none"
