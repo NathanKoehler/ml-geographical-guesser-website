@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   Box,
@@ -18,6 +18,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import "katex/dist/katex.min.css";
 import { InlineMath } from "react-katex";
+import { useRouter } from "next/navigation";
 
 const rows = [
   { member: "Aaditya Anugu", contributions: "Intro and Background" },
@@ -41,6 +42,8 @@ const rows = [
 ];
 
 export default function ProposalPage() {
+  const router = useRouter();
+
   return (
     <Box
       sx={{ p: "24px 0", display: "flex", width: "100%", alignItems: "center" }}
@@ -244,9 +247,13 @@ export default function ProposalPage() {
             </AccordionDetails>
           </Accordion>
         <Box sx={{ m: "12px 0", display: "flex", justifyContent: "center" }}>
-          <Link href="/docs/Machine_Learning_Proposal.pdf">
-          Link to Proposal PDF
-          </Link>
+          <Button
+            fullWidth
+            variant="contained"
+             onClick={() => router.push("/docs/Machine_Learning_Proposal.pdf")}
+          >
+            Link to Proposal PDF
+          </Button>
         </Box>
       </Container>
     </Box>
