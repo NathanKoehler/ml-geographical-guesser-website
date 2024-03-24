@@ -1,17 +1,15 @@
 "use client";
 
-import { Box, CssVarsProvider } from "@mui/joy";
+import { Box } from "@mui/material";
 import Header from "./components/Header";
 
 
 export default function ProposalLayout({ children }) {
 
   return (
-    <CssVarsProvider defaultMode="dark">
-        <Box sx={{ position: "absolute", top: 0, left: 0, width: "100dvw", height: "100dvh" }}>
-          <Header />
-          { children }
-        </Box>
-    </CssVarsProvider>
+      <Box sx={{ position: "absolute", top: 0, left: 0, width: "100dvw", height: "100dvh", overflowX: "hidden" }}>
+        <Header />
+        { children }
+      </Box>
   );
 }

@@ -7,11 +7,15 @@ import {
   Table,
   Accordion,
   AccordionDetails,
-  AccordionGroup,
   AccordionSummary,
   Typography,
-} from "@mui/joy";
-import Link from "@mui/material/Link";
+  Link,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell,
+} from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import "katex/dist/katex.min.css";
 import { InlineMath } from "react-katex";
 
@@ -42,12 +46,11 @@ export default function ProposalPage() {
       sx={{ p: "24px 0", display: "flex", width: "100%", alignItems: "center" }}
     >
       <Container>
-        <Typography level="h1" align="center">
+        <Typography typography="h1" align="center">
           Proposal
         </Typography>
-        <AccordionGroup>
           <Accordion defaultExpanded>
-            <AccordionSummary>Intro/Background</AccordionSummary>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>Intro/Background</AccordionSummary>
             <AccordionDetails>
               <span>
                 Geoguesser is a game in which players are randomly placed
@@ -82,7 +85,7 @@ export default function ProposalPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
-            <AccordionSummary>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               Problem Definition and Motivation
             </AccordionSummary>
             <AccordionDetails>
@@ -101,7 +104,7 @@ export default function ProposalPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
-            <AccordionSummary>Methods</AccordionSummary>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>Methods</AccordionSummary>
             <AccordionDetails>
               <span>
                 The first preprocessing method we will employ is standardization
@@ -130,7 +133,7 @@ export default function ProposalPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
-            <AccordionSummary>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               (Potential) Results and Discussion
             </AccordionSummary>
             <AccordionDetails>
@@ -143,7 +146,7 @@ export default function ProposalPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
-            <AccordionSummary>References</AccordionSummary>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>References</AccordionSummary>
             <AccordionDetails>
               [1] R. K., &quot;Geolocation - Geoguessr images (50k),&quot;
               Kaggle,{" "}
@@ -206,7 +209,7 @@ export default function ProposalPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
-            <AccordionSummary>GanttChart</AccordionSummary>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>GanttChart</AccordionSummary>
             <AccordionDetails>
               <Link
                 href="https://docs.google.com/spreadsheets/d/19_VOqvxJFMCFrAmEJ20LphN3s9Z-DeSa0s5TAErNw8Q/edit?usp=sharing"
@@ -220,30 +223,29 @@ export default function ProposalPage() {
             </AccordionDetails>
           </Accordion>
           <Accordion defaultExpanded>
-            <AccordionSummary>Contribution Table</AccordionSummary>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>Contribution Table</AccordionSummary>
             <AccordionDetails>
               <Table>
-                <thead>
-                  <tr>
-                    <td>Group Member</td>
-                    <td>Contributions</td>
-                  </tr>
-                </thead>
-                <tbody>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Group Member</TableCell>
+                    <TableCell>Contributions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
                   {rows.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.member}</td>
-                      <td>{row.contributions}</td>
-                    </tr>
+                    <TableRow key={index}>
+                      <TableCell>{row.member}</TableCell>
+                      <TableCell>{row.contributions}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
+                </TableBody>
               </Table>
             </AccordionDetails>
           </Accordion>
-        </AccordionGroup>
-        <Box sx={{ m: 2 }}>
+        <Box sx={{ m: "12px 0", display: "flex", justifyContent: "center" }}>
           <Link href="/docs/Machine_Learning_Proposal.pdf">
-            <Button fullWidth>Link to Proposal PDF</Button>
+          Link to Proposal PDF
           </Link>
         </Box>
       </Container>

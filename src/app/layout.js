@@ -1,24 +1,19 @@
-"use client";
+import * as React from 'react';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from '../theme';
 
-import { Inter } from "next/font/google";
-import "./globals.css";
-import ThemeRegistry from '../components/ThemeRegistry/ThemeRegistry';
-const inter = Inter({ subsets: ["latin"] });
-import { getInitColorSchemeScript } from '@mui/joy/styles';
-import { useEffect, useState } from "react";
-
-export default function RootLayout({ children }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+export default function RootLayout(props) {
   return (
     <html lang="en">
       <body>
-        {getInitColorSchemeScript()}
-        <ThemeRegistry>{mounted ? children : <></>}</ThemeRegistry>
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {props.children}
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

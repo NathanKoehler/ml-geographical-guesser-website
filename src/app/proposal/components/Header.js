@@ -1,27 +1,18 @@
-"use client";
-
 import React, { useState } from "react";
-import Box from "@mui/joy/Box";
-import Typography from "@mui/joy/Typography";
+import { Box, Typography, Tabs, Tab } from "@mui/material";
 import ShareLocationIcon from "@mui/icons-material/ShareLocation";
-import Tabs from '@mui/joy/Tabs';
-import TabList from '@mui/joy/TabList';
-import Tab from '@mui/joy/Tab';
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState("proposal");
+  const router = useRouter();
 
   const handleTabChange = (event, newValue) => {
-    switch (newValue) {
-      case 1:
-        
-        break;
-      default:
-        setTab(newValue);
-        redirect(`/${newValue}`);
-        break;
+    
+    if (newValue !== "none") {
+      setTab(newValue);
+      router.push(`/${newValue}`);
     }
   };
 
@@ -38,23 +29,26 @@ const Header = () => {
       {/* Logo and title section */}
       <Box sx={{ display: "flex", alignItems: "center", marginLeft: 3 }}>
         <ShareLocationIcon sx={{ marginRight: 1, color: "lightgreen" }} />
-        <Typography level="h4" component="h1">
-          ML Georgrapical Guesser Website
+        <Typography variant="h6" component="h1">
+          ML Geographical Guesser Website
         </Typography>
       </Box>
 
       {/* Navigation links */}
-        <Box sx={{ marginRight: 3 }}>
-          <Tabs aria-label="Navbar tabs" value={tab} onChange={handleTabChange}>
-            <TabList sx={{ height: 64 }}>
-              <Tab sx={{ padding: "0 16px" }} >Proposal</Tab>
-              <Link href="/docs/Machine_Learning_Proposal.pdf" target="_blank" rel="noopener noreferrer">
-                <Tab sx={{ padding: "0 16px", height: "100%" }} >PDF Link</Tab>
-              </Link>
-            </TabList>
-          </Tabs>
-        </Box>
-      
+      <Box sx={{ marginRight: 3 }}>
+        <Tabs aria-label="Navbar tabs" value={tab} onChange={handleTabChange}>
+          <Tab label="Proposal" sx={{ padding: "0 16px" }} value="proposal" />
+          {/* Using Next.js Link for client-side navigation */}
+          <Tab
+            component="a"
+            href="/docs/Machine_Learning_Proposal.pdf"
+            target="_blank"
+            label="PDF Link"
+            sx={{ padding: "0 16px" }}
+            value="none"
+          />
+        </Tabs>
+      </Box>
     </Box>
   );
 };
