@@ -5,6 +5,7 @@ import {
   AccordionDetails,
   AccordionGroup,
   AccordionSummary,
+  Box,
   Button,
   Container,
   Table,
@@ -192,7 +193,9 @@ export default function Home() {
               href="https://docs.google.com/spreadsheets/d/19_VOqvxJFMCFrAmEJ20LphN3s9Z-DeSa0s5TAErNw8Q/edit?usp=sharing"
               target="_blank"
             >
-              <Button fullWidth>You can view our Gantt Chart here.</Button>
+              <Box sx={{ p: 2 }}>
+                <Button fullWidth>You can view our Gantt Chart here.</Button>
+              </Box>
             </Link>
           </AccordionDetails>
         </Accordion>
