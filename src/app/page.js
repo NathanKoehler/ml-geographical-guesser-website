@@ -7,8 +7,8 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/proposal");
+    router.push("/midterm");
   }, []);
 
-  return <></>;
+  return <div>home</div>;
 }

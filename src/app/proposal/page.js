@@ -49,7 +49,7 @@ export default function ProposalPage() {
       sx={{ p: "24px 0", display: "flex", width: "100%", alignItems: "center" }}
     >
       <Container>
-        <Typography typography="h1" align="center">
+        <Typography typography="h1" align="center" sx={{ mb: 3 }}>
           Proposal
         </Typography>
           <Accordion defaultExpanded>
