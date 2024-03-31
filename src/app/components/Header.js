@@ -1,17 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo } from "react";
 import { Box, Typography, Tabs, Tab } from "@mui/material";
 import ShareLocationIcon from "@mui/icons-material/ShareLocation";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const Header = () => {
-  const [tab, setTab] = useState("proposal");
   const router = useRouter();
+  const pathname = usePathname();
+
+  const tab = useMemo(() => {
+    return pathname.slice(1);
+  }, [pathname]);
 
   const handleTabChange = (event, newValue) => {
     if (newValue !== "none") {
-      setTab(newValue);
       router.push(`/${newValue}`);
     }
   };
@@ -29,12 +32,13 @@ const Header = () => {
       <Box sx={{ display: "flex", alignItems: "center", marginLeft: 3 }}>
         <ShareLocationIcon sx={{ marginRight: 1, color: "lightgreen" }} />
         <Typography variant="h6" component="h1">
-          ML Geographical Guesser Website
+          ML Geographical Guesser Project
         </Typography>
       </Box>
 
       <Box sx={{ marginRight: 3 }}>
         <Tabs aria-label="Navbar tabs" value={tab} onChange={handleTabChange}>
+          <Tab label="Home" sx={{ padding: "24px 16px" }} value="home" />
           <Tab
             label="Proposal"
             sx={{ padding: "24px 16px" }}

@@ -10,5 +10,5 @@ export default function Home() {
     router.push("/midterm");
   }, []);
 
-  return <div>home</div>;
+  return <></>;
 }
