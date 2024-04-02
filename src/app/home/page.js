@@ -18,8 +18,8 @@ const HomePage = () => {
         <Typography variant="h3" component="h1">
           Machine Learning Geo Guesser
         </Typography>
-        <Typography variant="subtitle1">
-          Georgia Tech CS 4641 - Machine Learning Group Project
+        <Typography variant="subtitle1" align="center">
+          Georgia Tech CS 4641 - Team 3 - Machine Learning Project
         </Typography>
       </Box>
 
