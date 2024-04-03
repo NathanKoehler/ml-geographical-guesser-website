@@ -346,6 +346,20 @@ export default function ProposalPage() {
           </AccordionDetails>
         </Accordion>
         <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>GanttChart</AccordionSummary>
+            <AccordionDetails>
+              <Link
+                href="https://docs.google.com/spreadsheets/d/19_VOqvxJFMCFrAmEJ20LphN3s9Z-DeSa0s5TAErNw8Q/edit?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Box sx={{ m: 2 }}>
+                  <Button variant="outlined" fullWidth>You can view our Gantt Chart here.</Button>
+                </Box>
+              </Link>
+            </AccordionDetails>
+          </Accordion>
+        <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             Contribution Table
           </AccordionSummary>
