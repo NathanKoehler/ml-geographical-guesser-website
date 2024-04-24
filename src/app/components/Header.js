@@ -38,28 +38,34 @@ const Header = () => {
 
       <Box sx={{ marginRight: 3 }}>
         <Tabs aria-label="Navbar tabs" value={tab} onChange={handleTabChange}>
-          <Tab label="Home" sx={{ padding: "24px 16px" }} value="home" />
+          <Tab label="Home" sx={{ padding: "8px 18px" }} value="home" />
           <Tab
             label="Proposal"
-            sx={{ padding: "24px 16px" }}
+            sx={{ padding: "8px 18px" }}
             value="proposal"
           />
-          <Tab label="Midterm" sx={{ padding: "24px 16px" }} value="midterm" />
+          <Tab label="Midterm" sx={{ padding: "8px 18px" }} value="midterm" />
           <Tab
             label="Final"
-            sx={{ padding: "24px 16px" }}
+            sx={{ padding: "8px 18px" }}
             value="final"
           />
           <Tab
             onClick={() => router.push("/docs/Machine_Learning_Proposal.pdf")}
             label="Proposal PDF"
-            sx={{ padding: "24px 16px" }}
+            sx={{ padding: "8px 18px" }}
             value="none"
           />
           <Tab
             onClick={() => router.push("/docs/Midterm_Checkpoint.pdf")}
             label="Midterm PDF"
-            sx={{ padding: "24px 16px" }}
+            sx={{ padding: "8px 18px" }}
+            value="none"
+          />
+          <Tab
+            onClick={() => router.push("/docs/Final_Checkpoint.pdf")}
+            label="Final PDF"
+            sx={{ padding: "8px 18px" }}
             value="none"
           />
         </Tabs>

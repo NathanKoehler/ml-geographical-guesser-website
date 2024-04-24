@@ -26,7 +26,13 @@ import { useEffect, useState } from "react";
 import {
   precisionScoreChartRows,
   precisionScoreChartConclusion,
-  memeberContributions,
+  precisionScoreChartTwoRows,
+  precisionScoreChartTwoConclusion,
+  precisionScoreChartThreeRows,
+  precisionScoreChartThreeConclusion,
+  memberContributions,
+  memberMidtermContributions,
+  memberFinalContributions,
 } from "./constants.js";
 import { InlineMath } from "react-katex";
 
@@ -36,21 +42,53 @@ export default function FinalPage() {
   const [introExpanded, setIntroExpanded] = useState(true);
   const [problemExpanded, setProblemExpanded] = useState(true);
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [tableOnePage, setTableOnePage] = useState(0);
+  const [rowsPerTableOnePage, setRowsPerTableOnePage] = useState(5);
+
+  const [tableTwoPage, setTableTwoPage] = useState(0);
+  const [rowsPerTableTwoPage, setRowsPerTableTwoPage] = useState(5);
+
+  const [tableThreePage, setTableThreePage] = useState(0);
+  const [rowsPerTableThreePage, setRowsPerTableThreePage] = useState(5);
 
   useEffect(() => {
     setIntroExpanded(false);
     setProblemExpanded(false);
   }, []);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+  const handleChangePage = (event, pageNum, newPage) => {
+    switch (pageNum) {
+      case 0:
+        setTableOnePage(newPage);
+        break;
+      case 1:
+        setTableTwoPage(newPage);
+        break;
+      case 2:
+        setTableThreePage(newPage);
+        break;
+      default:
+        break;
+    }
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
+  const handleChangeRowsPerPage = (event, pageNum) => {
+    switch (pageNum) {
+      case 0:
+        setRowsPerTableOnePage(event.target.value);
+        setTableOnePage(0);
+        break;
+      case 1:
+        setRowsPerTableTwoPage(event.target.value);
+        setTableTwoPage(0);
+        break;
+      case 2:
+        setRowsPerTableThreePage(event.target.value);
+        setTableThreePage(0);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -173,7 +211,6 @@ export default function FinalPage() {
             </ol>
           </AccordionDetails>
         </Accordion>
-
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography>Preprocessing/Model #1</Typography>
@@ -290,7 +327,10 @@ export default function FinalPage() {
                 </TableHead>
                 <TableBody>
                   {precisionScoreChartRows
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .slice(
+                      tableOnePage * rowsPerTableOnePage,
+                      tableOnePage * rowsPerTableOnePage + rowsPerTableOnePage
+                    )
                     .map((row) => (
                       <TableRow
                         key={row.id}
@@ -336,10 +376,10 @@ export default function FinalPage() {
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
                 count={precisionScoreChartRows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPage={rowsPerTableOnePage}
+                page={tableOnePage}
+                onPageChange={(e, page) => handleChangePage(e, 0, page)}
+                onRowsPerPageChange={(e) => handleChangeRowsPerPage(e, 0)}
               />
             </TableContainer>
             <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
@@ -360,13 +400,12 @@ export default function FinalPage() {
             predicting class 55/56 (United States), which was most likely due to
             the disproportionate amount of data it had compared to the other
             classes.
-          </AccordionDetails>
-        </Accordion>
-        <Accordion defaultExpanded>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Analysis of Convolutional Neural Network</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
+            <Typography
+              typography="h6"
+              sx={{ textAlign: "center", mx: 2, my: 4 }}
+            >
+              Analysis of Convolutional Neural Network
+            </Typography>
             &emsp;&emsp;Overall, the visualizations show and imply that the
             model&apos;s accuracy was very low, and it can be inferred that it
             is most likely linked to the way we cleaned our data and or
@@ -417,9 +456,388 @@ export default function FinalPage() {
             class 55. This shows just how important data cleaning and
             preparation is, and if the data itself is not good, it will most
             likely imply that the model training will not do well either.
+          </AccordionDetails>
+        </Accordion>
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Preprocessing/Model #2</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
             <Typography sx={{ textAlign: "center", mx: 2, mb: 4 }}>
-              Preprocessing/Model #2
+              Further Data Cleaning*
             </Typography>
+            &emsp;&emsp;Because of the vastly disproportionate amount of images
+            from the USA compared to the other countries, we decided to further
+            clean the data by lessening the amount of images within the USA
+            before putting the dataset into training. Thus, we came up with 2
+            options
+            <ol>
+              <li>Augmenting the smaller classes by transforming them</li>
+              <li>Undersampling USA</li>
+            </ol>
+            <Typography sx={{ textAlign: "center", mx: 2, mb: 4 }}>
+              Preprocessing Method: Min-Max Scaling
+            </Typography>
+            Min-Max scaling is defined by{" "}
+            <InlineMath math="\sqrt{X'} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}" />
+            . This preprocessing method will normalize the RGB color pixel range
+            of 0-255 to 0-1. Like with image standardization, we hope that this
+            method will help us with uniformity, and we would like to see how it
+            will affect the training process and results.
+            <br />
+            Detailed Steps:
+            <ol>
+              Getting the undersampled and augmented dataset layer, we applied a
+              normalization layer that divides the values by 255 to make all of
+              the value ranges to be 0 to 1 only. This layer was applied to both
+              the training and validation layer. After applying the layers, we
+              had our new min-max scaled tensorflow dataset ready to be trained
+              for the next model. Resulting Dataset: Min-max scaled images,
+              undersampling USA to 300 images
+            </ol>
+            <Typography sx={{ textAlign: "center", mx: 2, mb: 4 }}>
+              Model: Transfer Learning Model
+            </Typography>
+            &emsp;&emsp;Transfer learning is a technique that utilizes
+            previously trained machine learning models’ pretrained weights to
+            create another model for a different use. In our case, we used a
+            DenseNet121, which was trained on the ImageNet dataset. By removing
+            the top of the pretrained model and adding some layers at the end,
+            the transfer learning model boasts a quick train time (as the
+            pretrained weights are frozen) and a relatively high accuracy. We
+            also added some dropout layers in order to reduce overfitting, which
+            was a pretty common problem with this dataset.
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              [Figure 2.0] Steps
+            </Typography>
+            <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+              <img
+                src="/ml-geographical-guesser-website/images/gallery/steps2_0.png"
+                alt="model accuracy during training"
+                width={"auto"}
+                height={600}
+              />
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Model #2 Results and Discussion</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              [Figure 2.1] Model Accuracy Over Epochs
+            </Typography>
+            <img
+              src="/ml-geographical-guesser-website/images/gallery/fig2_1.png"
+              alt="model loss during training"
+              width={"100%"}
+              height={"auto"}
+            />
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              [Figure 2.2] Model Loss Over Epochs
+            </Typography>
+            <img
+              src="/ml-geographical-guesser-website/images/gallery/fig2_2.png"
+              alt="confusion matrix"
+              width={"100%"}
+              height={"auto"}
+            />
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              [Figure 2.3] Precision Score Chart
+            </Typography>
+            <TableContainer component={Paper}>
+              <Table
+                aria-label="simple table"
+                size="small"
+                sx={{ width: "100%" }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID</TableCell>
+                    <TableCell align="right">Precision</TableCell>
+                    <TableCell align="right">Recall</TableCell>
+                    <TableCell align="right">F1-Score</TableCell>
+                    <TableCell align="right">Support</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {precisionScoreChartTwoRows
+                    .slice(
+                      tableTwoPage * rowsPerTableTwoPage,
+                      tableTwoPage * rowsPerTableTwoPage + rowsPerTableTwoPage
+                    )
+                    .map((row) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.id}
+                        </TableCell>
+                        <TableCell align="right">{row.precision}</TableCell>
+                        <TableCell align="right">{row.recall}</TableCell>
+                        <TableCell align="right">{row.f1Score}</TableCell>
+                        <TableCell align="right">{row.support}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+
+                <TableBody>
+                  <TableRow>
+                    <TableCell sx={{ border: "none" }}>
+                      <Typography typography="h6">Conclusion</Typography>
+                    </TableCell>
+                  </TableRow>
+                  {precisionScoreChartTwoConclusion.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.id}
+                      </TableCell>
+                      <TableCell align="right">{row.precision}</TableCell>
+                      <TableCell align="right">{row.recall}</TableCell>
+                      <TableCell align="right">{row.f1Score}</TableCell>
+                      <TableCell align="right">{row.support}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                align="left"
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={precisionScoreChartTwoRows.length}
+                rowsPerPage={rowsPerTableTwoPage}
+                page={tableTwoPage}
+                onPageChange={(e, page) => handleChangePage(e, 1, page)}
+                onRowsPerPageChange={(e) => handleChangeRowsPerPage(e, 1)}
+              />
+            </TableContainer>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Analysis of Transfer Learning Model
+            </Typography>
+            &emsp;&emsp;Firstly, compared to CNN’s confusion matrix,
+            DenseNet121’s transfer learning model suggests that it has a higher
+            chance of guessing correctly, albeit still only vaguely resembling a
+            diagonal matrix. However, because the guesses are spread out, it
+            implies that there is less bias within the model.
+            <br />
+            <br />
+            &emsp;&emsp;Taking a further look at the first two loss/accuracy
+            plots, we can see that there is also a significant difference in
+            trends compared to CNN. While both loss and accuracy seemed to
+            converge after a few epochs within CNN, there seems to be a plateau
+            in both loss and accuracy for our current transfer learning model
+            (especially validation loss), which may suggest that the model could
+            be overfitting its data and will have trouble predicting new data.
+            <br />
+            <br />
+            &emsp;&emsp;As mentioned before, transfer learning utilizes
+            pretrained weights to train on a different use case. Since
+            DenseNet121 was trained on the ImageNet dataset, which is an image
+            dataset,we think it performed slightly better than a CNN (less
+            complex than a DenseNet). The extreme dip in accuracy compared to
+            CNN is most likely due to CNN’s high bias towards guessing USA
+            without data cleaning (as there were a lot more USA’s in the testing
+            set for the CNN than for the transfer learning model), which may
+            have inflated the model’s accuracy.
+          </AccordionDetails>
+        </Accordion>
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Preprocessing/Model #3</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Preprocessing Method: Log Function Scaling
+            </Typography>
+            &emsp;&emsp;For our last machine learning algorithm, we decided to
+            use K-Nearest Neighbors because it vastly differentiated from the
+            other two models. While both CNN and Transfer Learning Models
+            require iteration, KNN differs from the two because it does not
+            utilize iteration. Instead, it rearranges the dataset to points that
+            are similar to each other. We chose this model because KNN does well
+            with general classification, which is what we are trying to do with
+            images. Since SKLearn’s KNN model does not take in Tensorflow
+            Datasets, we also had to convert the tensorflow dataset into numpy
+            arrays. Before doing so, we applied the image preprocessing steps
+            mentioned above and then fit the data into the SKLearn’s KNN model
+            to be saved into a pickle file. Then, using a testing set, we called
+            the model to make predictions, and the following confusion matrix
+            was the result of the predictions:
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              [Figure 3.1] KNN Confusion Matrix
+            </Typography>
+            <img
+              src="/ml-geographical-guesser-website/images/gallery/fig3_1.png"
+              alt="confusion matrix"
+              width={"100%"}
+              height={"auto"}
+            />
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              [Figure 3.1] Precision Score Chart
+            </Typography>
+            <TableContainer component={Paper}>
+              <Table
+                aria-label="simple table"
+                size="small"
+                sx={{ width: "100%" }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID</TableCell>
+                    <TableCell align="right">Precision</TableCell>
+                    <TableCell align="right">Recall</TableCell>
+                    <TableCell align="right">F1-Score</TableCell>
+                    <TableCell align="right">Support</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {precisionScoreChartThreeRows
+                    .slice(
+                      tableThreePage * rowsPerTableThreePage,
+                      tableThreePage * rowsPerTableThreePage +
+                        rowsPerTableThreePage
+                    )
+                    .map((row) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.id}
+                        </TableCell>
+                        <TableCell align="right">{row.precision}</TableCell>
+                        <TableCell align="right">{row.recall}</TableCell>
+                        <TableCell align="right">{row.f1Score}</TableCell>
+                        <TableCell align="right">{row.support}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+
+                <TableBody>
+                  <TableRow>
+                    <TableCell sx={{ border: "none" }}>
+                      <Typography typography="h6">Conclusion</Typography>
+                    </TableCell>
+                  </TableRow>
+                  {precisionScoreChartThreeConclusion.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.id}
+                      </TableCell>
+                      <TableCell align="right">{row.precision}</TableCell>
+                      <TableCell align="right">{row.recall}</TableCell>
+                      <TableCell align="right">{row.f1Score}</TableCell>
+                      <TableCell align="right">{row.support}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                align="left"
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={precisionScoreChartThreeRows.length}
+                rowsPerPage={rowsPerTableThreePage}
+                page={tableThreePage}
+                onPageChange={(e, page) => handleChangePage(e, 2, page)}
+                onRowsPerPageChange={(e) => handleChangeRowsPerPage(e, 2)}
+              />
+            </TableContainer>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Analysis of K-Nearest Neighbors
+            </Typography>
+            &emsp;&emsp;Overall, KNN was probably the least effective training
+            model to fit for this dataset because of the high dimensionality of
+            the dataset. Each image consists of 1536 x 662 x 3 data points, and
+            we had over 35,000 images combined, even after undersampling the
+            USA. With the other models, we were able to utilize tensorflow
+            datasets, which made memory allocation significantly easier. In
+            addition, because KNN forced the dataset to be numpy arrays,
+            unpacking them took a significant amount of memory as well and time
+            as well. As a result, we had to further resize the images to 56 x
+            384.
+            <br />
+            <br />
+            &emsp;&emsp;KNN is typically considered good for general
+            classifications, but due to the sheer amount of data points, it made
+            the model not only hard to run, but also harder for the model to
+            correctly classify labels because it showed a significant decrease
+            in accuracy despite better data cleaning. This is shown through our
+            confusion matrix, as it mirrors CNN in the way that it tends to
+            guess towards only 1-2 specific labels.
+          </AccordionDetails>
+        </Accordion>
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            Conclusion
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Overall Analysis and Comparison of Algorithms
+            </Typography>
+            <TableContainer component={Paper}>
+              <Table
+                aria-label="simple table"
+                size="small"
+                sx={{ width: "100%" }}
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell align="right">
+                      Image Standardization + CNN
+                    </TableCell>
+                    <TableCell align="right">
+                      Min-Max + Transfer Learning
+                    </TableCell>
+                    <TableCell align="right">Log Scaling + KNN</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Test Accuracy</TableCell>
+                    <TableCell align="right">24.62%*</TableCell>
+                    <TableCell align="right">5.36%</TableCell>
+                    <TableCell align="right">2.98%</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <Box sx={{ m: 2 }}>
+                * Test accuracy high for CNN potentially due to very unbalanced
+                testing dataset
+              </Box>
+            </TableContainer>
+            <br />
+            &emsp;&emsp;Overall, we can see that the KNN performed the worst,
+            and the Convolutional Neural Network. One main reason for this could
+            be the sheer number of features of the dataset. Image
+            classification, especially with a problem as difficult as ours,
+            requires a complex model, and as the transfer learning model was the
+            most complex model, it seems that it was the most effective in
+            solving the problem.
+            <br />
+            <br />
+            &emsp;&emsp;Taking a look at the confusion matrices as well,
+            transfer learning seemed to also resemble an identity matrix the
+            most, which suggests that it was more likely to conduct correct
+            guesses compared to CNN (which often kept on guessing USA), and KNN
+            (which often kept on guessing Argentina and Australia). Lastly, as
+            previously mentioned, although CNN had the highest accuracy, it was
+            heavily biased without undersampling the USA class. However, the low
+            accuracy of the models show just how important dataset cleaning and
+            augmenting can be.
           </AccordionDetails>
         </Accordion>
         <Accordion defaultExpanded>
@@ -427,15 +845,49 @@ export default function FinalPage() {
             <Typography>Next Steps</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            &emsp;&emsp;As for next steps, we plan on focusing more on the how
-            we should handle and prepare the data before training the model, and
-            also utilize new preprocessing methods as well. As previously
-            mentioned, our data was not uniform; this proved to have a negative
-            effect on the model, as it would be able to classify labels that had
-            much more images correctly than ones without. We thus plan on making
-            the data more uniform by either providing more images to the dataset
-            and or trimming more images from folders that had too many. We could
-            also potentially utilize the class weights feature in Tensorflow.
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Dataset Modifications
+            </Typography>
+            <ul>
+              <li>
+                Granted that our dataset was actually quite small, we could
+                expand more on the dataset by adding more images to the set.
+                This can be either done manually through getting images from
+                google street view, or creating a script to run GeoGuesser to
+                get new images and data from there directly.
+              </li>
+              <li>
+                Testing out each preprocessing method on the same model to see
+                which one does best to fine tune the preprocessing step.
+              </li>
+              <li>Make overall data within each folder to be uniform</li>
+            </ul>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Model Selections/Changes
+            </Typography>
+            <ul>
+              <li>
+                Given that we now know how to manipulate numpy arrays and
+                tensorflow datasets better, we would like to explore using other
+                models that run tensorflow datasets more easily.
+              </li>
+              <li>
+                Adjusting certain layers to models to see which combinations
+                result in better accuracies
+              </li>
+            </ul>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Final Thoughts
+            </Typography>
+            &emsp;&emsp;Our project really goes to show the importance of data
+            itself. While different preprocessing methods and machine
+            learning/deep learning methods did make a difference, the overall
+            performances of these models were subpar. This was mostly due to the
+            dataset being unbalanced, as well as having not that many data
+            points. Of course, it is more difficult to have a lot of data points
+            with image data as compared to other datasets such as numerical
+            data, but the lack of balanced data did cause a poor performance
+            from our models.
           </AccordionDetails>
         </Accordion>
         <Accordion defaultExpanded>
@@ -444,7 +896,7 @@ export default function FinalPage() {
           </AccordionSummary>
           <AccordionDetails>
             <Link
-              href="https://docs.google.com/spreadsheets/d/19_VOqvxJFMCFrAmEJ20LphN3s9Z-DeSa0s5TAErNw8Q/edit?usp=sharing"
+              href="https://docs.google.com/spreadsheets/d/19_VOqvxJFMCFrAmEJ20LphN3s9Z-DeSa0s5TAErNw8Q/edit#gid=396324071"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -458,9 +910,12 @@ export default function FinalPage() {
         </Accordion>
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            Contribution Table
+            Team Contributions
           </AccordionSummary>
           <AccordionDetails>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Project Proposal Contributions Table
+            </Typography>
             <Table>
               <TableHead>
                 <TableRow>
@@ -469,7 +924,45 @@ export default function FinalPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {memeberContributions.map((row, index) => (
+                {memberContributions.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.member}</TableCell>
+                    <TableCell>{row.contributions}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Project Midterm Contributions Table
+            </Typography>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Group Member</TableCell>
+                  <TableCell>Contributions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {memberMidtermContributions.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{row.member}</TableCell>
+                    <TableCell>{row.contributions}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Project Final Contributions Table
+            </Typography>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Group Member</TableCell>
+                  <TableCell>Contributions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {memberFinalContributions.map((row, index) => (
                   <TableRow key={index}>
                     <TableCell>{row.member}</TableCell>
                     <TableCell>{row.contributions}</TableCell>
@@ -479,13 +972,76 @@ export default function FinalPage() {
             </Table>
           </AccordionDetails>
         </Accordion>
+        <Accordion defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>References&nbsp;<span style={{ color: "lightblue" }}> (Listed in Proposal)</span></AccordionSummary>
+            <AccordionDetails>
+              [1] R. K., &quot;Geolocation - Geoguessr images (50k),&quot;
+              Kaggle,{" "}
+              <Link
+                href="https://www.kaggle.com/datasets/ubitquitin/geolocation-geoguessr-images-50k"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                https://www.kaggle.com/datasets/ubitquitin/geolocation-geoguessr-images-50k
+              </Link>
+              , (accessed Feb. 20, 2024). <br />
+              <br />
+              [2] A. Bhandari, &quot;Feature scaling: Engineering,
+              Normalization, and standardization (updated 2024),&quot; Analytics
+              Vidhya,{" "}
+              <Link
+                href="https://www.analyticsvidhya.com/blog/2020/04/feature-scaling-machine-learning-normalization-standardization/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                https://www.analyticsvidhya.com/blog/2020/04/feature-scaling-machine-learning-normalization-standardization/
+              </Link>
+              , (accessed Feb. 20, 2024). <br />
+              <br />
+              [3] Kim, H.E., Cosa-Linan, A., Santhanam, N. et al. Transfer
+              learning for medical image classification: a literature review.
+              BMC Med Imaging 22, 69 (2022).{" "}
+              <Link
+                href="https://doi.org/10.1186/s12880-022-00793-7"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                https://doi.org/10.1186/s12880-022-00793-7
+              </Link>{" "}
+              <br />
+              <br />
+              [4] &quot;Normalization | Machine learning | Google for
+              developers,&quot; Google,{" "}
+              <Link
+                href="https://developers.google.com/machine-learning/data-prep/transform/normalization"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                https://developers.google.com/machine-learning/data-prep/transform/normalization
+              </Link>
+              , (accessed Feb. 20, 2024). <br />
+              <br />
+              [5] Weyand, T., Kostrikov, I., Philbin, J. (2016). PlaNet - Photo
+              Geolocation with Convolutional Neural Networks. In: Leibe, B.,
+              Matas, J., Sebe, N., Welling, M. (eds) Computer Vision – ECCV
+              2016. ECCV 2016. Lecture Notes in Computer Science(), vol 9912.
+              Springer, Cham.{" "}
+              <Link
+                href="https://doi.org/10.1007/978-3-319-46484-8_3"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                https://doi.org/10.1007/978-3-319-46484-8_3
+              </Link>
+            </AccordionDetails>
+          </Accordion>
         <Box sx={{ m: "12px 0", display: "flex", justifyContent: "center" }}>
           <Button
             fullWidth
             variant="contained"
-            onClick={() => router.push("/docs/Midterm_Checkpoint.pdf")}
+            onClick={() => router.push("/docs/Final_Checkpoint.pdf")}
           >
-            Link to Midterm Checkpoint PDF
+            Link to Final Checkpoint PDF
           </Button>
         </Box>
       </Container>

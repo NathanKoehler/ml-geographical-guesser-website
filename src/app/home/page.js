@@ -64,6 +64,15 @@ const HomePage = () => {
           >
             Read Midterm Report
           </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            size="large"
+            sx={{ mx: 1 }}
+            onClick={() => handleLink("final")}
+          >
+            Read Final Report
+          </Button>
         </Box>
       </Box>
 
