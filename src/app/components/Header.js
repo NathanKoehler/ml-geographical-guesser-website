@@ -46,6 +46,11 @@ const Header = () => {
           />
           <Tab label="Midterm" sx={{ padding: "24px 16px" }} value="midterm" />
           <Tab
+            label="Final"
+            sx={{ padding: "24px 16px" }}
+            value="final"
+          />
+          <Tab
             onClick={() => router.push("/docs/Machine_Learning_Proposal.pdf")}
             label="Proposal PDF"
             sx={{ padding: "24px 16px" }}

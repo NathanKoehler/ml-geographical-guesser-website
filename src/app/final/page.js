@@ -16,6 +16,8 @@ import {
   TableCell,
   Paper,
   TableContainer,
+  TablePagination,
+  TableFooter,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import "katex/dist/katex.min.css";
@@ -26,17 +28,30 @@ import {
   precisionScoreChartConclusion,
   memeberContributions,
 } from "./constants.js";
+import { InlineMath } from "react-katex";
 
-export default function MidtermPage() {
+export default function FinalPage() {
   const router = useRouter();
 
   const [introExpanded, setIntroExpanded] = useState(true);
   const [problemExpanded, setProblemExpanded] = useState(true);
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   useEffect(() => {
     setIntroExpanded(false);
     setProblemExpanded(false);
   }, []);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   return (
     <Box
@@ -44,7 +59,7 @@ export default function MidtermPage() {
     >
       <Container>
         <Typography typography="h3" align="center" sx={{ mb: 3 }}>
-          Midterm Checkpoint
+          Final Checkpoint
         </Typography>
         <Accordion
           defaultExpanded
@@ -118,7 +133,7 @@ export default function MidtermPage() {
           </AccordionSummary>
           <AccordionDetails>
             <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
-              Data Preprocessing
+              Data Cleaning
             </Typography>
             &emsp;&emsp;Before our preprocessing step, we decided to first clean
             the dataset deleting non-uniform resolution images, and then deleted
@@ -126,20 +141,82 @@ export default function MidtermPage() {
             would be hard to classify images of those classes because of the
             small amount of data given. Lastly, due to the large dimensionality
             of the dataset, we decided to resize every remaining image into ⅓ of
-            its original size. Next, for the actual preprocessing step, we
-            implemented standardization across the entirety of the remaining
-            data. Due to issues with the memory when creating the datasets, we
-            decided to utilize Tensorflow Datasets, which helped with memory as
-            it doesn&apos;t load the entirety of the dataset in the variable at once.
-            We divided the dataset into 70% training, 15% validation, and 15%
-            testing. We fit a standard scaling (z-score) layer from Tensorflow
-            Keras to the training set and transformed all three sets of data
-            with this fitted layer. This resulted in our standardized training,
-            validation, and testing datasets.
+            its original size. The original image dimensionality was 1536 x 662,
+            but after resizing, the dimensionality became 512 x 220. Next, for
+            the actual preprocessing step, we implemented standardization across
+            the entirety of the remaining data. Due to issues with the memory
+            when creating the datasets, we decided to utilize Tensorflow
+            Datasets, which helped with memory as it doesn’t load the entirety
+            of the dataset in the variable at once.
             <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
-              Machine Learning Algorithm/Model Implemented
+              Detailed Steps:
             </Typography>
-            &emsp;&emsp;For our ML Algorithm for this checkpoint, we used a
+            <ol>
+              <li>Manually reviewed all folders of original dataset A.</li>
+              <li>
+                Removed classification folders that had fewer than 100 images to
+                create new dataset B.
+              </li>
+              <li>
+                Used a Python resize script to scale each image in dataset B to
+                ⅓ of its original size, changing from 1536 x 662 to 512 x 220.
+              </li>
+              <li>
+                Converted the new dataset B into dataset C using a script for
+                Tensorflow dataset format.
+              </li>
+              <ol>
+                <li>Tensorflow dataset type</li>
+                <li>Contains only folders with 100+ images</li>
+                <li>Each image in dataset C resized to 512 x 220</li>
+              </ol>
+            </ol>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>Preprocessing/Model #1</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Preprocessing Method: Image Standardization
+            </Typography>
+            Image standardization is defined by{" "}
+            <InlineMath math="X' = \frac{X - \mu}{\sigma}" />, and this
+            preprocessing method will help us reduce the lighting and exposure
+            for training. By doing this, it allows us to have uniformity across
+            all images and may improve convergence during training. We divided
+            the dataset into 70% training, 15% validation, and 15% testing. We
+            fit a standard scaling (z-score) layer from Tensorflow Keras to the
+            training set and transformed all three sets of data with this fitted
+            layer. This resulted in our standardized training, validation, and
+            testing datasets, testing datasets.
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Detailed Steps:
+            </Typography>
+            <ol>
+              <li>
+                Use sklearn&apos;s <code>train_test_split</code> to split the
+                image-label pairs into training and testing datasets.
+              </li>
+              <li>Split image-labels into 75% training and 25% testing.</li>
+              <li>
+                Split 20% of the training dataset into a validation dataset.
+              </li>
+              <li>
+                The final dataset split results in:
+                <ol>
+                  <li>60% training</li>
+                  <li>15% validation</li>
+                  <li>25% testing</li>
+                </ol>
+              </li>
+            </ol>
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              Model: Convolutional Neural Network
+            </Typography>
+            Our first machine learning algorithm that we used was a
             Convolutional Neural Network, which was a type of supervised
             learning. We chose to do CNN because of its efficacy with handling
             image data. Widely known image classification models such as the
@@ -153,6 +230,9 @@ export default function MidtermPage() {
             classification. As for the activation functions of the Conv2D
             layers, we used ReLU, as it is faster than Sigmoid to compute and
             also doesn&apos;t have Sigmoid&apos;s vanishing gradient issue.
+            <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
+              [Figure 1.1] Model Steps
+            </Typography>
             <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
               <img
                 src="/ml-geographical-guesser-website/images/gallery/steps.png"
@@ -161,16 +241,8 @@ export default function MidtermPage() {
                 height={600}
               />
             </Box>
-          </AccordionDetails>
-        </Accordion>
-
-        <Accordion defaultExpanded>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography>Results and Discussion</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
             <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
-              [Figure 1.2] Model Accuracy vs. Training Epoch
+              [Figure 1.2 (A) ] Model Accuracy vs. Training Epoch
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
               <img
@@ -181,7 +253,7 @@ export default function MidtermPage() {
               />
             </Box>
             <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
-              [Figure 1.2] Model Loss vs. Training Epoch
+              [Figure 1.2 (B) ] Model Loss vs. Training Epoch
             </Typography>
             <img
               src="/ml-geographical-guesser-website/images/gallery/modellossduringtraining.png"
@@ -202,7 +274,11 @@ export default function MidtermPage() {
               [Figure 1.4] Precision Score Chart
             </Typography>
             <TableContainer component={Paper}>
-              <Table aria-label="simple table" size="small">
+              <Table
+                aria-label="simple table"
+                size="small"
+                sx={{ width: "100%" }}
+              >
                 <TableHead>
                   <TableRow>
                     <TableCell>ID</TableCell>
@@ -213,20 +289,24 @@ export default function MidtermPage() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {precisionScoreChartRows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="right">{row.precision}</TableCell>
-                      <TableCell align="right">{row.recall}</TableCell>
-                      <TableCell align="right">{row.f1Score}</TableCell>
-                      <TableCell align="right">{row.support}</TableCell>
-                    </TableRow>
-                  ))}
+                  {precisionScoreChartRows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {row.id}
+                        </TableCell>
+                        <TableCell align="right">{row.precision}</TableCell>
+                        <TableCell align="right">{row.recall}</TableCell>
+                        <TableCell align="right">{row.f1Score}</TableCell>
+                        <TableCell align="right">{row.support}</TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
 
                 <TableBody>
@@ -251,9 +331,19 @@ export default function MidtermPage() {
                   ))}
                 </TableBody>
               </Table>
+              <TablePagination
+                align="left"
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={precisionScoreChartRows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
             </TableContainer>
             <Typography typography="h6" sx={{ textAlign: "center", my: 2 }}>
-              [Figure 1.5] # Images In a Class
+              [Figure 1.5] Images In a Class Diagram
             </Typography>
             <img
               src="/ml-geographical-guesser-website/images/gallery/imageswithinaclass.png"
@@ -327,6 +417,9 @@ export default function MidtermPage() {
             class 55. This shows just how important data cleaning and
             preparation is, and if the data itself is not good, it will most
             likely imply that the model training will not do well either.
+            <Typography sx={{ textAlign: "center", mx: 2, mb: 4 }}>
+              Preprocessing/Model #2
+            </Typography>
           </AccordionDetails>
         </Accordion>
         <Accordion defaultExpanded>
@@ -346,19 +439,23 @@ export default function MidtermPage() {
           </AccordionDetails>
         </Accordion>
         <Accordion defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>GanttChart</AccordionSummary>
-            <AccordionDetails>
-              <Link
-                href="https://docs.google.com/spreadsheets/d/19_VOqvxJFMCFrAmEJ20LphN3s9Z-DeSa0s5TAErNw8Q/edit?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Box sx={{ m: 2 }}>
-                  <Button variant="outlined" fullWidth>You can view our Gantt Chart here.</Button>
-                </Box>
-              </Link>
-            </AccordionDetails>
-          </Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            GanttChart
+          </AccordionSummary>
+          <AccordionDetails>
+            <Link
+              href="https://docs.google.com/spreadsheets/d/19_VOqvxJFMCFrAmEJ20LphN3s9Z-DeSa0s5TAErNw8Q/edit?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Box sx={{ m: 2 }}>
+                <Button variant="outlined" fullWidth>
+                  You can view our Gantt Chart here.
+                </Button>
+              </Box>
+            </Link>
+          </AccordionDetails>
+        </Accordion>
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             Contribution Table

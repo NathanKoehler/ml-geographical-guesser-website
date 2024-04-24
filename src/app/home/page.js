@@ -22,7 +22,6 @@ const HomePage = () => {
           Georgia Tech CS 4641 - Team 3 - Machine Learning Project
         </Typography>
       </Box>
-
       <Box sx={{ mb: 8 }}>
         <Typography
           variant="h4"
